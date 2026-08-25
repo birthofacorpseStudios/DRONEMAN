@@ -10,14 +10,21 @@ jobs:
       - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v3
         with: { gradle-version: 8.7 }
-      - name: Unzip
+
+      - name: Unzip valid package
         run: |
           ZIP=$(find . -maxdepth 2 -name "*.zip" | head -n 1)
+          echo "Found $ZIP"
           unzip -o "$ZIP" -d .
+          ls -la DRONEMAN_EXACT/app/src/main/res/mipmap-xxxhdpi/
+
       - name: Build with exact icon
         run: |
           cd DRONEMAN_EXACT
           gradle assembleDebug --stacktrace
-      - name: Upload
+
+      - name: Upload APK with exact icon
         uses: actions/upload-artifact@v4
-        with: { name: DRONEMAN-EXACT-ICON-apk, path: "**/app-debug.apk" }
+        with:
+          name: DRONEMAN-EXACT-ICON-direct-install
+          path: "**/app-debug.apk"
